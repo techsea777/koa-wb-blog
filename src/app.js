@@ -9,28 +9,32 @@ const logger = require('koa-logger')
 const index = require('./routes/index')
 const users = require('./routes/users')
 
-// error handler
+// error handler 页面上打印错误的
 onerror(app)
 
 // middlewares
+// 处理postData数据的
 app.use(bodyparser({
   enableTypes:['json', 'form', 'text']
 }))
 app.use(json())
-app.use(logger())
-app.use(require('koa-static')(__dirname + '/public'))
 
+app.use(logger())
+
+// 将文件静态化
+app.use(require('koa-static')(__dirname + '/public'))
+// 指定服务端渲染模板 为ejs模板
 app.use(views(__dirname + '/views', {
   extension: 'ejs'
 }))
 
-// logger
-app.use(async (ctx, next) => {
-  const start = new Date()
-  await next()
-  const ms = new Date() - start
-  console.log(`${ctx.method} ${ctx.url} - ${ms}ms`)
-})
+// logger 
+// app.use(async (ctx, next) => {
+//   const start = new Date()
+//   await next()
+//   const ms = new Date() - start
+//   console.log(`${ctx.method} ${ctx.url} - ${ms}ms`)
+// })
 
 // routes
 app.use(index.routes(), index.allowedMethods())
